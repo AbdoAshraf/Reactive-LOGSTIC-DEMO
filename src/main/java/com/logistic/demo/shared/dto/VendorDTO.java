@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class VendorDTO {
-	private String VendorId;
+	private String vendorId;
 	private String name;
-	private List<CategoryDTO> categoriesDTO;
+	private List<CategoryDTO> categories;
 }

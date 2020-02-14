@@ -17,7 +17,7 @@ import lombok.Setter;
 public class Vendor {
 	@Id
 	private String id;
-	private String VendorId;
+	private String vendorId;
 	private String name;
 	private List<Category> categories;
 }

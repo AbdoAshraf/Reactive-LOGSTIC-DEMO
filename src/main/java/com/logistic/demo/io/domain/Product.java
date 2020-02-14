@@ -14,7 +14,7 @@ import lombok.Setter;
 public class Product {
 	@Id
 	private String id;
-	private String ProductId;
+	private String productId;
 	private String name;
 	private float price;
 	private String curraucy;

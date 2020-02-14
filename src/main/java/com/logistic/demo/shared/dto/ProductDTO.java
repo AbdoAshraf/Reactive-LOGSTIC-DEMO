@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class ProductDTO {
-	private String ProductId;
+	private String productId;
 	private String name;
 	private float price;
 	private String curraucy;
