@@ -1,15 +1,16 @@
-package com.logistic.demo.ui;
+package com.logistic.demo.ui.Client;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.logistic.demo.io.domain.Client;
-import com.logistic.demo.io.repo.ClientRepo;
+import com.logistic.demo.service.Client.ClientServices;
+import com.logistic.demo.shared.dto.ClientDTO;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -18,18 +19,22 @@ import reactor.core.publisher.Mono;
 @RequestMapping("/client")
 public class ClientController {
 	@Autowired
-	private ClientRepo cr;
+	private ClientServices clientServices;
 	
-	@PostMapping()  
-    public @ResponseBody  
-    Mono<Client> addClient(@RequestBody Client client) {  
-        return cr.save(client);
+	@PostMapping()
+    public @ResponseBody
+    Mono<ClientDTO> addClient(@RequestBody ClientDTO client) {  
+	  return clientServices.creatClient(client);
     }  
 	
 	@GetMapping()  
     public @ResponseBody
-    Flux<Client> getAllKayaks() {  
-        return cr.findAll();  
+    Flux<ClientDTO> getAllKayaks() {  
+        return clientServices.getClients();  
     }
-
+	@GetMapping(path = "/{clientId}")
+	public @ResponseBody 
+	Mono<ClientDTO> getUser(@PathVariable String clientId) {
+		return clientServices.getClient(clientId);
+	}
 }

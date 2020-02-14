@@ -4,9 +4,10 @@ import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 
 import com.logistic.demo.io.domain.Client;
 
-public interface ClientRepo extends ReactiveMongoRepository<Client,String>{
-	
+import reactor.core.publisher.Mono;
 
+public interface ClientRepo extends ReactiveMongoRepository<Client,String>{
+	Mono<Client> findByClientId(String ClientId);
 }
 
 

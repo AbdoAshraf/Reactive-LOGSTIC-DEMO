@@ -18,7 +18,7 @@ import lombok.Setter;
 public class Client{
 	@Id
 	private String id;
-	private String ClientId;
+	private String clientId;
 	private String name;
 	private String age;
 	private List<Order> orders;
