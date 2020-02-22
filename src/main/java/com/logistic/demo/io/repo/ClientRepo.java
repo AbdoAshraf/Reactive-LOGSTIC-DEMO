@@ -2,7 +2,7 @@ package com.logistic.demo.io.repo;
 
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 
-import com.logistic.demo.io.document.Client;
+import com.logistic.demo.io.domain.Client;
 
 import reactor.core.publisher.Mono;
 

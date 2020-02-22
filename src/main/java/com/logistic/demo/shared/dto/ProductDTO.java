@@ -9,7 +9,6 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class ProductDTO {
-
 	private String productId;
 	private String name;
 	private float price;
