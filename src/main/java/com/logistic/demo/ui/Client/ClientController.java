@@ -20,21 +20,19 @@ import reactor.core.publisher.Mono;
 public class ClientController {
 	@Autowired
 	private ClientServices clientServices;
-	
+
 	@PostMapping()
-    public @ResponseBody
-    Mono<ClientDTO> addClient(@RequestBody ClientDTO client) {  
-	  return clientServices.creatClient(client);
-    }  
-	
-	@GetMapping()  
-    public @ResponseBody
-    Flux<ClientDTO> getAllKayaks() {  
-        return clientServices.getClients();  
-    }
+	public @ResponseBody Mono<ClientDTO> addClient(@RequestBody ClientDTO client) {
+		return clientServices.creatClient(client);
+	}
+
+	@GetMapping()
+	public @ResponseBody Flux<ClientDTO> getAllKayaks() {
+		return clientServices.getClients();
+	}
+
 	@GetMapping(path = "/{clientId}")
-	public @ResponseBody 
-	Mono<ClientDTO> getUser(@PathVariable String clientId) {
+	public @ResponseBody Mono<ClientDTO> getUser(@PathVariable String clientId) {
 		return clientServices.getClient(clientId);
 	}
 }

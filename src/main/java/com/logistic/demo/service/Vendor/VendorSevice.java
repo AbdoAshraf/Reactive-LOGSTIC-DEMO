@@ -1,6 +1,6 @@
 package com.logistic.demo.service.Vendor;
 
-import com.logistic.demo.io.domain.Product;
+import com.logistic.demo.io.document.Product;
 import com.logistic.demo.shared.dto.CategoryDTO;
 import com.logistic.demo.shared.dto.ClientDTO;
 import com.logistic.demo.shared.dto.ProductDTO;

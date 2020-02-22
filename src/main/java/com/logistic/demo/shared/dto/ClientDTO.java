@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class ClientDTO {
-	private String ClientId;
+	private String clientId;
 	private String name;
 	private String age;
 	private List<OrderDTO> orders;

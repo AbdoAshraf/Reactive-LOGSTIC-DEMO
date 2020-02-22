@@ -1,4 +1,6 @@
-package com.logistic.demo.io.domain;
+package com.logistic.demo.io.document;
+
+import java.util.List;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -7,16 +9,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Document
+
+@Document(collection="vendor")
 @Getter
 @Setter
 @NoArgsConstructor
-public class Product {
+public class Vendor {
 	@Id
 	private String id;
-	private String productId;
+	private String vendorId;
 	private String name;
-	private float price;
-	private String curraucy;
-	//private String category;
+	private List<Category> categories;
 }
