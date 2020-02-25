@@ -14,7 +14,9 @@ public interface OrderLogisiticAdmin {
 	Flux<RegionAdminDTO> getAllRegions();
 
 	Mono<RegionAdminDTO> updateOrder(OrderDTO orderDTO);
-	
+
 	Mono<RegionAdminDTO> delteOrder(OrderDTO orderDTO);
+
+	Mono<RegionAdminDTO> updateTimeSlots(String regionId, int duration);
 
 }

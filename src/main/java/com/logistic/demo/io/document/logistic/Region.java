@@ -1,7 +1,9 @@
 package com.logistic.demo.io.document.logistic;
 
-import java.time.LocalDateTime;
-import java.util.List;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Map;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -16,6 +18,6 @@ public class Region {
 	private String Id;
 	private String regionId;
 	private String name;
-	private List<SalesMan> salesMen;
-	private List<LocalDateTime> avilableDates;
+	private HashSet<SalesMan> salesMen;
+	private Map<String, HashSet<SalesMan>> aviliableDates;
 }
