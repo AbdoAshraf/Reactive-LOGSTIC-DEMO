@@ -14,7 +14,7 @@ public class SalesMan {
 	private String Id;
 	private String salesManId;
 	private String name;
-	private SalesManTimingInfos salesManTimingInfos;
+//	private SalesManTimingInfos salesManTimingInfos;
 	private int avliablecapacity;
 	private Map<String, Order> orders;
 	private Map<String, Integer> avaliableDates;

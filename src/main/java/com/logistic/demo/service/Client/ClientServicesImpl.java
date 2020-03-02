@@ -18,25 +18,25 @@ import reactor.core.publisher.Mono;
 public class ClientServicesImpl implements ClientServices {
 	@Autowired
 	private ClientRepo clientRepo;
-
+    
+	@Autowired
+    private ModelMapper modelMapper;
+    
 	@Override
 	public Mono<ClientDTO> creatClient(ClientDTO clientDTO) {
 		String clientId = Generators.timeBasedGenerator().generate().toString();
 		clientDTO.setClientId(clientId);
-		ModelMapper modelMapper = new ModelMapper();
 		Client client = modelMapper.map(clientDTO, Client.class);
 		return clientRepo.save(client).map(c -> modelMapper.map(c, ClientDTO.class));
 	}
 
 	@Override
 	public Flux<ClientDTO> getClients() {
-		ModelMapper modelMapper = new ModelMapper();
 		return clientRepo.findAll().map(c -> modelMapper.map(c, ClientDTO.class));
 	}
 
 	@Override
 	public Mono<ClientDTO> getClient(String clientId) {
-		ModelMapper modelMapper = new ModelMapper();
 		Mono<? extends Client> fallback = Mono.error(new GlobalException(HttpStatus.NOT_FOUND, "invalid client id"));
 		return clientRepo.findByClientId(clientId).switchIfEmpty(fallback)
 				.map(c -> modelMapper.map(c, ClientDTO.class));

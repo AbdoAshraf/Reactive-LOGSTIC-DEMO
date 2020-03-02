@@ -33,7 +33,7 @@ public class LogisticClient {
 	}
 
 	@GetMapping(path = "/{regionId}/{size}")
-	public @ResponseBody Mono<RegionClientDTO> appiontment(@PathVariable String regionId , @PathVariable int size) {
+	public @ResponseBody Mono<RegionClientDTO> appiontment(@PathVariable String regionId, @PathVariable int size) {
 		return this.orderLogisiticClient.appiontment(regionId, size);
 	}
 //	

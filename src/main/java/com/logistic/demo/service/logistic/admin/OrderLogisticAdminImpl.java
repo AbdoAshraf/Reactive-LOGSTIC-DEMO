@@ -21,8 +21,8 @@ import reactor.core.publisher.Mono;
 
 @Service
 public class OrderLogisticAdminImpl implements OrderLogisiticAdmin {
-
-	private ModelMapper modelMapper = new ModelMapper();
+	@Autowired
+	private ModelMapper modelMapper;
 	@Autowired
 	private RegionRepo regionRepo;
 
@@ -49,7 +49,7 @@ public class OrderLogisticAdminImpl implements OrderLogisiticAdmin {
 		return this.regionRepo.findByRegionId(regionId).map(r -> {
 			r.getSalesMen().putIfAbsent(salesManDTO.getName(), modelMapper.map(salesManDTO, SalesMan.class));
 			return r;
-		}).flatMap(r->this.regionRepo.save(r).map(c -> modelMapper.map(c, RegionAdminDTO.class)));
+		}).flatMap(r -> this.regionRepo.save(r).map(c -> modelMapper.map(c, RegionAdminDTO.class)));
 	}
 
 //	@Override

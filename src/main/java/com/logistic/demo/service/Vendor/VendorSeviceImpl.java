@@ -19,12 +19,12 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Service
-public class VendorServicesImpl implements VendorSevice {
+public class VendorSeviceImpl implements VendorSevice {
 	@Autowired
 	private VendorRepo vendorRepo;
 	// private final MongoTemplate mongoTemplate;
-
-	ModelMapper modelMapper = new ModelMapper();
+	@Autowired
+	private ModelMapper modelMapper;
 
 	@Override
 	public Mono<VendorDTO> creatVendor(VendorDTO vendorDTO) {
@@ -50,12 +50,11 @@ public class VendorServicesImpl implements VendorSevice {
 			v.getCategoryMap().get(categoryName).getProductMap().putIfAbsent(productDTO.getName(),
 					modelMapper.map(productDTO, Product.class));
 			return v;
-		}).flatMap(v -> vendorRepo.save(v).map(c -> new ModelMapper().map(c, VendorDTO.class)));
+		}).flatMap(v -> vendorRepo.save(v).map(c -> modelMapper.map(c, VendorDTO.class)));
 	}
 
 	@Override
 	public Mono<VendorDTO> updateVendor(String vendorID, VendorDTO vendorDTO) {
-		ModelMapper modelMapper = new ModelMapper();
 		Vendor vendor = modelMapper.map(vendorDTO, Vendor.class);
 		return null;
 	}
@@ -76,11 +75,11 @@ public class VendorServicesImpl implements VendorSevice {
 	public Mono<ProductDTO> getProduct(String vendorId, String categoryName, String ProductId) {
 		return this.getVendor(vendorId).map(r -> {
 			if (r.getCategoryMap().containsKey(categoryName)
-			&& r.getCategoryMap().get(categoryName).getProductMap().containsKey(ProductId)) {
-			Product product = r.getCategoryMap().get(categoryName).getProductMap().get(ProductId);
-			return this.modelMapper.map(product, ProductDTO.class);
+					&& r.getCategoryMap().get(categoryName).getProductMap().containsKey(ProductId)) {
+				Product product = r.getCategoryMap().get(categoryName).getProductMap().get(ProductId);
+				return this.modelMapper.map(product, ProductDTO.class);
 			}
-		    throw new GlobalException(HttpStatus.NOT_FOUND,"The data you seek is not here.");
+			throw new GlobalException(HttpStatus.NOT_FOUND, "The data you seek is not here.");
 		});
 	}
 }

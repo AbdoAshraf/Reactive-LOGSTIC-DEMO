@@ -14,7 +14,7 @@ import com.logistic.demo.exceptions.GlobalException;
 import com.logistic.demo.io.document.logistic.Order;
 import com.logistic.demo.io.document.logistic.SalesMan;
 import com.logistic.demo.io.repo.logistic.RegionRepo;
-import com.logistic.demo.service.Vendor.VendorServicesImpl;
+import com.logistic.demo.service.Vendor.VendorSeviceImpl;
 import com.logistic.demo.service.logistic.admin.OrderLogisiticAdmin;
 import com.logistic.demo.shared.dto.OrderDTO;
 import com.logistic.demo.shared.dto.logistic.client.RegionClientDTO;
@@ -24,8 +24,8 @@ import reactor.core.publisher.Mono;
 
 @Service
 public class OrderLogisticClientImpl implements OrderLogisticClient {
-	// bean
-	private final ModelMapper modelMapper = new ModelMapper();
+	@Autowired
+	private ModelMapper modelMapper;
 
 	@Autowired
 	private RegionRepo regionRepo;
@@ -33,7 +33,7 @@ public class OrderLogisticClientImpl implements OrderLogisticClient {
 	OrderLogisiticAdmin orderLogisiticAdmin;
 
 	@Autowired
-	private VendorServicesImpl vendorServicesImpl;
+	private VendorSeviceImpl vendorServicesImpl;
 
 	@Override
 	public Flux<RegionClientDTO> getRegions() {
