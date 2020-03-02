@@ -1,4 +1,4 @@
-package com.logistic.demo.ui.Client;
+package com.logistic.demo.api.Client;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;

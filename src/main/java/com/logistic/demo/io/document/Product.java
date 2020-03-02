@@ -12,9 +12,6 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class Product {
-	@Id
-	private String id;
-	private String productId;
 	private String name;
 	private float price;
 	private String curraucy;

@@ -1,7 +1,5 @@
 package com.logistic.demo.io.document.logistic;
 
-import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.Map;
 
 import org.springframework.data.annotation.Id;
@@ -18,6 +16,5 @@ public class Region {
 	private String Id;
 	private String regionId;
 	private String name;
-	private HashSet<SalesMan> salesMen;
-	private Map<String, HashSet<SalesMan>> aviliableDates;
+	private Map<String,SalesMan> salesMen;
 }

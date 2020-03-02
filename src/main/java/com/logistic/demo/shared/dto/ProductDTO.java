@@ -1,6 +1,5 @@
 package com.logistic.demo.shared.dto;
 
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -9,10 +8,11 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class ProductDTO {
-
-	private String productId;
 	private String name;
+	private String vendorId;
+	private String categorName;
 	private float price;
 	private String curraucy;
-	//private String category;
+	private int size;
+	// private String category;
 }

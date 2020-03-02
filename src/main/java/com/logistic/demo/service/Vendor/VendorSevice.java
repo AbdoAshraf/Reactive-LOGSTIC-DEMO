@@ -17,4 +17,5 @@ public interface VendorSevice {
 	Mono<VendorDTO> updateVendor(String vendorID, VendorDTO vendordto);
 	Mono<VendorDTO> addCateogry(String VendorID, CategoryDTO categoryDTO);
 	Mono<VendorDTO> addProduct(String vendorId, String categoryId, ProductDTO producDTO);
+	Mono<ProductDTO> getProduct(String vendorId, String CategoryId, String ProductId);
 }

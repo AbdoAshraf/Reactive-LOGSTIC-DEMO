@@ -1,16 +1,18 @@
 package com.logistic.demo.shared.dto;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
+
 @Getter
 @Setter
-@NoArgsConstructor
 public class CategoryDTO {
-	private String CategorytId;
 	private String name;
-	private List<ProductDTO> products;
-
+	private Map<String,ProductDTO> productMap;
+	
+	public CategoryDTO() {
+		this.productMap = new HashMap<String,ProductDTO>();
+	}
 }

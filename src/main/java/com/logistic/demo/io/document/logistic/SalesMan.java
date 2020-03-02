@@ -1,24 +1,22 @@
 package com.logistic.demo.io.document.logistic;
 
-import java.util.List;
+import java.util.Map;
 
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 
-import ch.qos.logback.core.subst.Token.Type;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-@Document
 public class SalesMan {
 	@Id
 	private String Id;
 	private String salesManId;
 	private String name;
-	List<Order> oredrs;
-	private int unitcapacity;
+	private SalesManTimingInfos salesManTimingInfos;
 	private int avliablecapacity;
-	//List<LocalDateTime> reservedDates;
+	private Map<String, Order> orders;
+	private Map<String, Integer> avaliableDates;
+	private Status status;
 }

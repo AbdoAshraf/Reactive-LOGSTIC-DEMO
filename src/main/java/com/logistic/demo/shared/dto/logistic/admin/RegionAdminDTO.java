@@ -1,10 +1,7 @@
 package com.logistic.demo.shared.dto.logistic.admin;
 
-import java.util.HashSet;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
-
-import com.logistic.demo.io.document.logistic.SalesMan;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -13,6 +10,8 @@ import lombok.Setter;
 public class RegionAdminDTO {
 	private String regionId;
 	private String name;
-	private HashSet<SalesManDTO> salesMen;
-	private Map<String, HashSet<SalesMan>> aviliableDates;
+	private Map<String,SalesManDTO> salesMen;
+    public RegionAdminDTO() {
+    	this.salesMen = new HashMap<>();
+    }
 }

@@ -11,5 +11,5 @@ public interface OrderLogisticClient {
 
 	Mono<RegionClientDTO> appiontment(String regionId, int size);
 
-	void selectTimeSlot(OrderDTO orderDTO);
+	Mono<OrderDTO> selectTimeSlot(OrderDTO orderDTO);
 }

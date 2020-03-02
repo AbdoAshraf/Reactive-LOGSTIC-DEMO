@@ -1,16 +1,21 @@
 package com.logistic.demo.service.logistic.Client;
 
-import java.util.HashSet;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.commons.lang3.Range;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.uuid.Generators;
+import com.logistic.demo.exceptions.GlobalException;
 import com.logistic.demo.io.document.logistic.Order;
 import com.logistic.demo.io.document.logistic.SalesMan;
 import com.logistic.demo.io.repo.logistic.RegionRepo;
+import com.logistic.demo.service.Vendor.VendorServicesImpl;
+import com.logistic.demo.service.logistic.admin.OrderLogisiticAdmin;
 import com.logistic.demo.shared.dto.OrderDTO;
 import com.logistic.demo.shared.dto.logistic.client.RegionClientDTO;
 
@@ -19,70 +24,72 @@ import reactor.core.publisher.Mono;
 
 @Service
 public class OrderLogisticClientImpl implements OrderLogisticClient {
-	private final static ModelMapper modelMapper = new ModelMapper();
+	// bean
+	private final ModelMapper modelMapper = new ModelMapper();
 
 	@Autowired
 	private RegionRepo regionRepo;
+	@Autowired
+	OrderLogisiticAdmin orderLogisiticAdmin;
+
+	@Autowired
+	private VendorServicesImpl vendorServicesImpl;
 
 	@Override
 	public Flux<RegionClientDTO> getRegions() {
 		return regionRepo.findNameAndregionId().map(r -> modelMapper.map(r, RegionClientDTO.class));
 	}
 
-	@SuppressWarnings("null")
 	@Override
 	public Mono<RegionClientDTO> appiontment(String regionId, int size) {
 		return this.regionRepo.findByRegionId(regionId).map(r -> {
 			RegionClientDTO regionClientDTO = new RegionClientDTO();
+			regionClientDTO.setName(r.getName());
 			regionClientDTO.setRegionId(r.getRegionId());
-			regionClientDTO.setRegionId(r.getRegionId());
-			// Map<Integer, Integer> map = new HashMap<Integer, Integer>();
-			for (Entry<String, HashSet<SalesMan>> entry : r.getAviliableDates().entrySet()) {
-				// System.out.println("Key = " + entry.getKey() + ", Value = " +
-				// entry.getValue());
-				for (SalesMan s : entry.getValue()) {
-					if (this.sizeinrange(size, s.getAvliablecapacity())) {
-						regionClientDTO.getAviliableDates().putIfAbsent(entry.getKey(), s.getName());
+			for (Entry<String, SalesMan> entry : r.getSalesMen().entrySet()) {
+				Map<String, Integer> dates = entry.getValue().getAvaliableDates();
+				for (Entry<String, Integer> entry1 : dates.entrySet()) {
+					if (this.sizeinrange(size, entry1.getValue())) {
+						regionClientDTO.getAvalibleDates().put(entry1.getKey(), entry.getKey());
 					}
 				}
+
 			}
-			// regionClientDTO.setAviliableDates(temp);
 			return regionClientDTO;
 		});
 	}
 
 	private boolean sizeinrange(int size, int avalibleCapacity) {
-		Range<Integer> myRange = Range.between(size-1,size*2);
-		if (myRange.contains(avalibleCapacity))
-				return true;
-		return false;
-		/*if (size <= avalibleCapacity && size * 3 > avalibleCapacity) {
-			return true;
-		}
-
-		if (size == avalibleCapacity)
-			return true;
-
-		return false;/**/
+		return Range.between(size - 1, size * 2).contains(avalibleCapacity) ? true : false;
 	}
 
 	@Override
-	public void selectTimeSlot(OrderDTO orderDTO) {
-		this.regionRepo.findByRegionId(orderDTO.getRegionId()).map(r -> {
-			// HashSet<SalesMan> s =
-			// r.getAviliableDates().get(orderDTO.getTimeSlot().toString());
-			// s.forEach();
-			for (SalesMan s : r.getSalesMen()) {
-				if (s.getName() == orderDTO.getSalesManName()) {
-					if (this.sizeinrange(orderDTO.getProduct().getSize(), s.getAvliablecapacity())) {
-						s.getOredrs().add(modelMapper.map(orderDTO, Order.class));
-						int avliablecapacity = s.getAvliablecapacity() - orderDTO.getProduct().getSize();
-						s.setAvliablecapacity(avliablecapacity);
+	public Mono<OrderDTO> selectTimeSlot(OrderDTO orderDTO) {
+		return this.vendorServicesImpl.getProduct(orderDTO.getProduct().getVendorId(),
+				orderDTO.getProduct().getCategorName(), orderDTO.getProduct().getName()).doOnError((error) -> {
+					throw (GlobalException) error;
+				}).then(this.regionRepo.findByRegionId(orderDTO.getRegionId()).map(r -> {
+					if (!r.getSalesMen().containsKey(orderDTO.getSalesManName()))
+						throw new GlobalException(HttpStatus.NOT_FOUND, "sales man not found");
+					if (!r.getSalesMen().get(orderDTO.getSalesManName()).getAvaliableDates()
+							.containsKey(orderDTO.getTimeSlot().toString()))
+						throw new GlobalException(HttpStatus.NOT_FOUND, "no such time slot");
+					orderDTO.setOrderId(Generators.timeBasedGenerator().generate().toString());
+					SalesMan s = r.getSalesMen().get(orderDTO.getSalesManName());
+					int cap = s.getAvaliableDates().get(orderDTO.getTimeSlot().toString());
+					if (this.sizeinrange(orderDTO.getProduct().getSize(), cap)) {
+						s.getAvaliableDates().replace(orderDTO.getTimeSlot().toString(),
+								cap - orderDTO.getProduct().getSize());
+						r.getSalesMen().get(orderDTO.getSalesManName()).getOrders().put(orderDTO.getClientId(),
+								this.modelMapper.map(orderDTO, Order.class));
 					}
-				}
-			}
-			return r;
-		}).flatMap(r -> this.regionRepo.save(r));
+					return r;
+				}).flatMap(r -> this.regionRepo.save(r)).map(r -> {
+					return orderDTO;
+				})
+
+		);
+
 	}
 
 }

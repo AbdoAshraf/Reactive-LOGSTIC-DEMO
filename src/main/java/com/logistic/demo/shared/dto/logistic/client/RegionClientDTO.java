@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
@@ -12,9 +11,9 @@ import lombok.Setter;
 public class RegionClientDTO {
 	private String regionId;
 	private String name;
-	private Map<String,String> aviliableDates;
-	public RegionClientDTO(){
-		this.aviliableDates = new HashMap<>();
-	}
+	private Map<String,String> avalibleDates;
 	
+	public RegionClientDTO() {
+		this.avalibleDates = new HashMap<>();
+	}
 }

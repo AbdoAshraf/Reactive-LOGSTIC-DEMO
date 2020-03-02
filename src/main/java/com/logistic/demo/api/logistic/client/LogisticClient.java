@@ -1,4 +1,4 @@
-package com.logistic.demo.ui.logistic.client;
+package com.logistic.demo.api.logistic.client;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,8 +23,8 @@ public class LogisticClient {
 	private OrderLogisticClient orderLogisiticClient;
 
 	@PostMapping()
-	public void creatRegion(@RequestBody OrderDTO orderDTO) {
-		this.orderLogisiticClient.selectTimeSlot(orderDTO);
+	public @ResponseBody Mono<OrderDTO> selectTimeSlot(@RequestBody OrderDTO orderDTO) {
+		return this.orderLogisiticClient.selectTimeSlot(orderDTO);
 	}
 
 	@GetMapping()
@@ -33,8 +33,13 @@ public class LogisticClient {
 	}
 
 	@GetMapping(path = "/{regionId}/{size}")
-	public @ResponseBody Mono<RegionClientDTO> updateRegion(@PathVariable String regionId , @PathVariable int size) {
+	public @ResponseBody Mono<RegionClientDTO> appiontment(@PathVariable String regionId , @PathVariable int size) {
 		return this.orderLogisiticClient.appiontment(regionId, size);
 	}
+//	
+//	@PutMapping()
+//	public void selecttimeslot(@RequestBody OrderDTO orderDTO) {
+//		this.orderLogisiticClient.selectTimeSlot(orderDTO);
+//	}
 
 }

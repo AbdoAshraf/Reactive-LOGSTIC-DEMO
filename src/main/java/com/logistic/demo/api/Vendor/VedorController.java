@@ -1,6 +1,9 @@
-package com.logistic.demo.ui.Vendor;
+package com.logistic.demo.api.Vendor;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -10,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.logistic.demo.exceptions.NotFoundException;
 import com.logistic.demo.service.Vendor.VendorSevice;
 import com.logistic.demo.shared.dto.CategoryDTO;
 import com.logistic.demo.shared.dto.ProductDTO;
@@ -54,4 +58,12 @@ public class VedorController {
 			@PathVariable String categoryId ,@RequestBody ProductDTO productDTO) {
 		return vendorService.addProduct(vendorId, categoryId, productDTO);
 	}
+	
+	@GetMapping(path = "/get-product/{vendorId}/{categoryId}/{productId}")
+	public @ResponseBody Mono<ProductDTO> getVendor(@PathVariable String vendorId,
+			@PathVariable String categoryId,@PathVariable String productId) {
+		return this.vendorService.getProduct(vendorId, categoryId, productId).
+				switchIfEmpty(Mono.error(new NotFoundException("The data you seek is not here.")));
+	}
+	    
 }

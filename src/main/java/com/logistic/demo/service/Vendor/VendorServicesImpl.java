@@ -1,12 +1,12 @@
 package com.logistic.demo.service.Vendor;
 
-import java.util.ArrayList;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.uuid.Generators;
+import com.logistic.demo.exceptions.GlobalException;
 import com.logistic.demo.io.document.Category;
 import com.logistic.demo.io.document.Product;
 import com.logistic.demo.io.document.Vendor;
@@ -22,41 +22,33 @@ import reactor.core.publisher.Mono;
 public class VendorServicesImpl implements VendorSevice {
 	@Autowired
 	private VendorRepo vendorRepo;
-	//private final MongoTemplate mongoTemplate;
-	
+	// private final MongoTemplate mongoTemplate;
+
+	ModelMapper modelMapper = new ModelMapper();
 
 	@Override
 	public Mono<VendorDTO> creatVendor(VendorDTO vendorDTO) {
 		String vendorId = Generators.timeBasedGenerator().generate().toString();
 		vendorDTO.setVendorId(vendorId);
-		vendorDTO.setCategories(new ArrayList<>());
-		ModelMapper modelMapper = new ModelMapper();
 		Vendor vendor = modelMapper.map(vendorDTO, Vendor.class);
 		return vendorRepo.save(vendor).map(c -> modelMapper.map(c, VendorDTO.class));
-
 	}
 
 	@Override
 	public Mono<VendorDTO> addCateogry(String vendorId, CategoryDTO categoryDTO) {
-		String categoryId = Generators.timeBasedGenerator().generate().toString();
-		categoryDTO.setCategorytId(categoryId);
-		categoryDTO.setProducts(new ArrayList<>());
+		// categoryDTO.setProducts(new ArrayList<>());
 		return this.vendorRepo.findByVendorId(vendorId).map(v -> {
-			v.getCategories().add(new ModelMapper().map(categoryDTO, Category.class));
+			// String categoryId = Generators.timeBasedGenerator().generate().toString();
+			v.getCategoryMap().putIfAbsent(categoryDTO.getName(), modelMapper.map(categoryDTO, Category.class));
 			return v;
-		}).flatMap(v -> vendorRepo.save(v).map(c -> new ModelMapper().map(c, VendorDTO.class)));
+		}).flatMap(v -> vendorRepo.save(v).map(c -> modelMapper.map(c, VendorDTO.class)));
 	}
 
 	@Override
-	public Mono<VendorDTO> addProduct(String vendorId, String CategoryId, ProductDTO producDTO) {
-		String productId = Generators.timeBasedGenerator().generate().toString();
-		producDTO.setProductId(productId);
+	public Mono<VendorDTO> addProduct(String vendorId, String categoryName, ProductDTO productDTO) {
 		return vendorRepo.findByVendorId(vendorId).map(v -> {
-			v.getCategories().forEach(c -> {
-				if (c.getCategorytId().equals(CategoryId)) {
-					c.getProducts().add(new ModelMapper().map(producDTO, Product.class));
-				}
-			});
+			v.getCategoryMap().get(categoryName).getProductMap().putIfAbsent(productDTO.getName(),
+					modelMapper.map(productDTO, Product.class));
 			return v;
 		}).flatMap(v -> vendorRepo.save(v).map(c -> new ModelMapper().map(c, VendorDTO.class)));
 	}
@@ -79,4 +71,16 @@ public class VendorServicesImpl implements VendorSevice {
 		ModelMapper modelMapper = new ModelMapper();
 		return vendorRepo.findByVendorId(vendorId).map(c -> modelMapper.map(c, VendorDTO.class));
 	}/**/
+
+	@Override
+	public Mono<ProductDTO> getProduct(String vendorId, String categoryName, String ProductId) {
+		return this.getVendor(vendorId).map(r -> {
+			if (r.getCategoryMap().containsKey(categoryName)
+			&& r.getCategoryMap().get(categoryName).getProductMap().containsKey(ProductId)) {
+			Product product = r.getCategoryMap().get(categoryName).getProductMap().get(ProductId);
+			return this.modelMapper.map(product, ProductDTO.class);
+			}
+		    throw new GlobalException(HttpStatus.NOT_FOUND,"The data you seek is not here.");
+		});
+	}
 }
